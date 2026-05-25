@@ -1,0 +1,366 @@
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   ProMan Global Color System
+   ============================================
+   STRICT RULES:
+   - Two themes only: Light and Dark
+   - No component-level custom colors
+   - Interactive text turns white on hover/active
+   ============================================ */
+
+:root {
+  /* ===== LIGHT THEME ===== */
+  
+  /* Primary Backgrounds */
+  --background: #EEF3F6;
+  --foreground: #0B1F2A;
+  
+  /* Card / Container Backgrounds */
+  --card: #FFFFFF;
+  --card-foreground: #0B1F2A;
+  
+  /* Popover */
+  --popover: #FFFFFF;
+  --popover-foreground: #0B1F2A;
+  
+  /* Primary Accent (Deep Green) */
+  --primary: #0F6B4A;
+  --primary-foreground: #FFFFFF;
+  
+  /* Secondary Accent (Emerald Green) */
+  --secondary: #3FAE8F;
+  --secondary-foreground: #FFFFFF;
+  
+  /* Muted Text */
+  --muted: #E1E9EE;
+  --muted-foreground: #5F6E7A;
+  
+  /* Accent Colors */
+  --accent: #3FAE8F;
+  --accent-foreground: #FFFFFF;
+  
+  /* Status Colors */
+  --success: #2ECC71;
+  --success-foreground: #FFFFFF;
+  
+  --warning: #F4B400;
+  --warning-foreground: #0B1F2A;
+  
+  --destructive: #E74C3C;
+  --destructive-foreground: #FFFFFF;
+  
+  --info: #2BA6A6;
+  --info-foreground: #FFFFFF;
+  
+  /* Borders & Inputs */
+  --border: rgba(11, 31, 42, 0.1);
+  --input: rgba(11, 31, 42, 0.1);
+  --input-background: #FFFFFF;
+  --switch-background: #9FB3C1;
+  --ring: #0F6B4A;
+  
+  /* Interactive Element States */
+  --interactive-default: #E1E9EE;
+  --interactive-default-foreground: #0B1F2A;
+  --interactive-hover: #0F6B4A;
+  --interactive-hover-foreground: #FFFFFF;
+  --interactive-active: #0B1F2A;
+  --interactive-active-foreground: #FFFFFF;
+  
+  /* Section Backgrounds */
+  --section-background: #E1E9EE;
+  
+  /* Chart Colors */
+  --chart-1: #0F6B4A;
+  --chart-2: #3FAE8F;
+  --chart-3: #2BA6A6;
+  --chart-4: #2ECC71;
+  --chart-5: #F4B400;
+  
+  /* Typography */
+  --font-size: 16px;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  
+  /* Radius */
+  --radius: 0.625rem;
+  
+  /* Sidebar */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0B1F2A;
+  --sidebar-primary: #0F6B4A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E1E9EE;
+  --sidebar-accent-foreground: #0B1F2A;
+  --sidebar-border: rgba(11, 31, 42, 0.1);
+  --sidebar-ring: #0F6B4A;
+}
+
+.dark {
+  /* ===== DARK THEME ===== */
+  
+  /* Primary Backgrounds */
+  --background: #0B1F2A;
+  --foreground: #FFFFFF;
+  
+  /* Card / Container Backgrounds */
+  --card: #132E3F;
+  --card-foreground: #FFFFFF;
+  
+  /* Popover */
+  --popover: #132E3F;
+  --popover-foreground: #FFFFFF;
+  
+  /* Primary Accent (Deep Green) */
+  --primary: #0F6B4A;
+  --primary-foreground: #FFFFFF;
+  
+  /* Secondary Accent (Emerald Green) */
+  --secondary: #3FAE8F;
+  --secondary-foreground: #FFFFFF;
+  
+  /* Muted Text */
+  --muted: #132E3F;
+  --muted-foreground: #9FB3C1;
+  
+  /* Accent Colors */
+  --accent: #3FAE8F;
+  --accent-foreground: #FFFFFF;
+  
+  /* Status Colors */
+  --success: #2ECC71;
+  --success-foreground: #FFFFFF;
+  
+  --warning: #F4B400;
+  --warning-foreground: #0B1F2A;
+  
+  --destructive: #E74C3C;
+  --destructive-foreground: #FFFFFF;
+  
+  --info: #2BA6A6;
+  --info-foreground: #FFFFFF;
+  
+  /* Borders & Inputs */
+  --border: #1F3A4D;
+  --input: #1F3A4D;
+  --input-background: #132E3F;
+  --switch-background: #9FB3C1;
+  --ring: #0F6B4A;
+  
+  /* Interactive Element States */
+  --interactive-default: #1F3A4D;
+  --interactive-default-foreground: #FFFFFF;
+  --interactive-hover: #0F6B4A;
+  --interactive-hover-foreground: #FFFFFF;
+  --interactive-active: #0B1F2A;
+  --interactive-active-foreground: #FFFFFF;
+  
+  /* Section Backgrounds */
+  --section-background: #1F3A4D;
+  
+  /* Chart Colors */
+  --chart-1: #0F6B4A;
+  --chart-2: #3FAE8F;
+  --chart-3: #2BA6A6;
+  --chart-4: #2ECC71;
+  --chart-5: #F4B400;
+  
+  /* Typography */
+  --font-size: 16px;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  
+  /* Radius */
+  --radius: 0.625rem;
+  
+  /* Sidebar */
+  --sidebar: #132E3F;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #0F6B4A;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1F3A4D;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1F3A4D;
+  --sidebar-ring: #0F6B4A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-interactive-default: var(--interactive-default);
+  --color-interactive-default-foreground: var(--interactive-default-foreground);
+  --color-interactive-hover: var(--interactive-hover);
+  --color-interactive-hover-foreground: var(--interactive-hover-foreground);
+  --color-interactive-active: var(--interactive-active);
+  --color-interactive-active-foreground: var(--interactive-active-foreground);
+  --color-section-background: var(--section-background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
+
+/* ============================================
+   Global Dark Theme — Form Control Overrides
+   ============================================
+   CRITICAL: These rules are INTENTIONALLY outside @layer base.
+   
+   In CSS Cascade Layers, user-agent styles for form controls
+   (color: fieldtext, -webkit-text-fill-color) are "unlayered"
+   and can override @layer base rules. By placing our overrides
+   outside any layer, they get maximum cascade priority.
+   ============================================ */
+
+/* ── Form control text color ─────────────────────────────────────────────── */
+
+input,
+textarea,
+select {
+  color: var(--foreground);
+  caret-color: var(--foreground);
+  -webkit-text-fill-color: var(--foreground);
+}
+
+/* ── Placeholder contrast hierarchy ──────────────────────────────────────── */
+
+::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.65;
+  -webkit-text-fill-color: var(--muted-foreground);
+}
+
+/* ── Autofill styling ────────────────────────────────────────────────────────
+   Chrome/WebKit forces a light yellow background and black text on autofill.
+   These rules override that to preserve dark-theme colors.
+   ──────────────────────────────────────────────────────────────────────── */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--foreground);
+  -webkit-box-shadow: 0 0 0 1000px var(--input-background) inset;
+  box-shadow: 0 0 0 1000px var(--input-background) inset;
+  transition: background-color 5000s ease-in-out 0s;
+  font-size: inherit;
+}
+
+/* ============================================
+   Custom Animations
+   ============================================ */
+@keyframes gradient-flow {
+  0%, 100% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+}
+
+.animate-gradient-flow {
+  background-size: 100% 200%;
+  animation: gradient-flow 8s ease-in-out infinite;
+}
