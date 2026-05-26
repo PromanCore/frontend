@@ -98,9 +98,9 @@ function ValueRenderer({ value, depth = 0 }: { value: any; depth?: number }) {
                   if (v === null || v === undefined) return null;
                   const lbl = k.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
                   return (
-                    <div key={k} className="flex items-start gap-2 text-xs py-0.5">
-                      <span className="font-medium text-muted-foreground w-36 flex-shrink-0 pt-px">{lbl}</span>
-                      <span className="text-card-foreground flex-1 break-words">
+                    <div key={k} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2 text-xs py-1 sm:py-0.5">
+                      <span className="font-medium text-muted-foreground sm:w-36 flex-shrink-0 pt-px">{lbl}</span>
+                      <span className="text-card-foreground flex-1 min-w-0 break-words">
                         <ValueRenderer value={v} depth={depth + 1} />
                       </span>
                     </div>
@@ -121,9 +121,9 @@ function ValueRenderer({ value, depth = 0 }: { value: any; depth?: number }) {
         {entries.map(([k, v]) => {
           const lbl = k.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
           return (
-            <div key={k} className="flex items-start gap-2 text-xs py-0.5">
-              <span className="font-medium text-muted-foreground w-36 flex-shrink-0 pt-px">{lbl}</span>
-              <span className="text-card-foreground flex-1 break-words">
+            <div key={k} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2 text-xs py-1 sm:py-0.5">
+              <span className="font-medium text-muted-foreground sm:w-36 flex-shrink-0 pt-px">{lbl}</span>
+              <span className="text-card-foreground flex-1 min-w-0 break-words">
                 <ValueRenderer value={v} depth={depth + 1} />
               </span>
             </div>
@@ -231,9 +231,9 @@ function ReportViewPage({
                 if (value === null || value === undefined) return null;
                 const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
                 return (
-                  <div key={key} className="flex items-start gap-3 py-2 border-b border-border/50 last:border-0">
-                    <span className="text-xs font-medium text-muted-foreground w-44 flex-shrink-0 pt-0.5">{label}</span>
-                    <div className="text-sm text-card-foreground flex-1">
+                  <div key={key} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 py-3 sm:py-2 border-b border-border/50 last:border-0">
+                    <span className="text-xs font-medium text-muted-foreground sm:w-44 flex-shrink-0 pt-0.5">{label}</span>
+                    <div className="text-sm text-card-foreground flex-1 min-w-0">
                       <ValueRenderer value={value} />
                     </div>
                   </div>
@@ -257,18 +257,18 @@ function ReportViewPage({
                 const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase());
                 const isComplex = typeof value === 'object' && value !== null;
                 return (
-                  <div key={key} className={`${isComplex ? '' : 'flex items-start gap-3'} py-2 border-b border-border/50 last:border-0`}>
+                  <div key={key} className={`${isComplex ? '' : 'flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3'} py-3 sm:py-2 border-b border-border/50 last:border-0`}>
                     {isComplex ? (
                       <>
                         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide block mb-2">{label}</span>
-                        <div className="text-sm text-card-foreground">
+                        <div className="text-sm text-card-foreground min-w-0">
                           <ValueRenderer value={value} />
                         </div>
                       </>
                     ) : (
                       <>
-                        <span className="text-xs font-medium text-muted-foreground w-44 flex-shrink-0 pt-0.5">{label}</span>
-                        <div className="text-sm text-card-foreground flex-1 break-words">
+                        <span className="text-xs font-medium text-muted-foreground sm:w-44 flex-shrink-0 pt-0.5">{label}</span>
+                        <div className="text-sm text-card-foreground flex-1 min-w-0 break-words">
                           <ValueRenderer value={value} />
                         </div>
                       </>
@@ -302,9 +302,9 @@ function ReportViewPage({
                     <div className="space-y-2 pl-5">
                       {recs.map((rec, i) => (
                         <div key={i} className="border border-border rounded-xl p-4 space-y-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-start sm:items-center gap-2">
                             <PriorityBadge priority={rec.priority} />
-                            <span className="text-sm text-card-foreground">{rec.recommendation}</span>
+                            <span className="text-sm text-card-foreground flex-1 min-w-0 break-words">{rec.recommendation}</span>
                           </div>
                           {rec.expectedImpact && <p className="text-xs text-muted-foreground pl-1">Impact: {rec.expectedImpact}</p>}
                           {rec.category && <p className="text-xs text-muted-foreground pl-1">Category: {rec.category}</p>}
