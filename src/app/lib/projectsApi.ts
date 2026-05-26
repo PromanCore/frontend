@@ -143,6 +143,16 @@ const real = {
     return res.data.data;
   },
 
+  /**
+   * DELETE /api/projects/:projectId
+   * Permanently deletes the project. This is irreversible.
+   * Returns 200 with { data: { message } }.
+   */
+  async deleteProject(projectId: string): Promise<{ message: string }> {
+    const res = await apiClient.delete(`/api/projects/${projectId}`);
+    return res.data.data;
+  },
+
   // ── Team (API-17 through API-27) ───────────────────────────────────────────
 
   async addMember(projectId: string, payload: {

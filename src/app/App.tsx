@@ -389,6 +389,8 @@ export type Project = {
   description: string;
   createdAt: string;  // ISO-8601
   updatedAt: string;  // ISO-8601
+  /** UUID of the user who owns this project */
+  ownerId?: string;
 
   // ── Backward-compat aliases (kept for existing screens) ─────────────────────
   name: string;       // alias for projectName

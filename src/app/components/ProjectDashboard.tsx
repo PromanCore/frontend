@@ -9,11 +9,13 @@ import {
   Brain, ArrowLeft, Plus, Pencil, Archive, RotateCcw, Users,
   AlertTriangle, TrendingUp, FileText, Activity, Circle,
   CheckCircle2, Clock, XCircle, ChevronRight, Package,
-  AlertCircle, BarChart3, Loader2, X,
+  AlertCircle, BarChart3, Loader2, X, Trash2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { useProjects } from '../contexts/ProjectsContext';
+import { useAuth } from '../contexts/AuthContext';
+import { getApiMessage } from '../lib/apiErrorUtils';
 import { EditProjectModal } from './EditProjectModal';
 import { formatDate, formatDateShort, formatRelativeDate } from '../lib/dateUtils';
 import projectsApi from '../lib/projectsApi';
@@ -41,6 +43,8 @@ interface DashboardData {
   successPredictionsCount: number;
   reports: Report[];
   moduleStatuses: ModuleStatuses | null;
+  /** Project ownerId from the detail API — list API may not return it. */
+  ownerId: string | null;
 }
 
 /**
@@ -129,6 +133,12 @@ async function fetchDashboardData(projectId: string): Promise<DashboardData> {
     };
   }
 
+  // Extract ownerId from the project detail response (list API may not include it).
+  const ownerId: string | null =
+    projectDetailRes.status === 'fulfilled'
+      ? (projectDetailRes.value?.project?.ownerId ?? null)
+      : null;
+
   return {
     members,
     teamAnalyses,
@@ -139,6 +149,7 @@ async function fetchDashboardData(projectId: string): Promise<DashboardData> {
     successPredictionsCount: rawSuccessPredictions.length,
     reports,
     moduleStatuses,
+    ownerId,
   };
 }
 
@@ -349,6 +360,74 @@ function ConfirmDialog({ type, projectName, isLoading, onConfirm, onCancel }: {
   );
 }
 
+/**
+ * Destructive confirmation dialog for permanently deleting a project.
+ * Clearly warns about irreversible data loss and requires explicit confirmation.
+ */
+function DeleteProjectDialog({ projectName, isLoading, errorMessage, onConfirm, onCancel }: {
+  projectName: string;
+  isLoading: boolean;
+  errorMessage: string | null;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="w-full max-w-md bg-card border border-destructive/30 rounded-2xl shadow-2xl p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center justify-center flex-shrink-0">
+              <Trash2 className="w-5 h-5 text-destructive" />
+            </div>
+            <h3 className="text-lg font-semibold text-card-foreground">Delete Project</h3>
+          </div>
+          <button onClick={onCancel} disabled={isLoading} className="p-1 text-muted-foreground hover:text-foreground disabled:opacity-50">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="mb-6 space-y-3">
+          <p className="text-sm text-card-foreground font-medium">
+            Are you sure you want to permanently delete &ldquo;{projectName}&rdquo;?
+          </p>
+          <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-3">
+            <p className="text-xs text-destructive leading-relaxed">
+              <strong>This action cannot be undone.</strong> Deleting this project will permanently remove:
+            </p>
+            <ul className="mt-2 space-y-1 text-xs text-destructive/90 list-disc list-inside">
+              <li>All project data and settings</li>
+              <li>Team members and their analyses</li>
+              <li>Risk analyses and success predictions</li>
+              <li>All generated reports</li>
+              <li>Dashboard and history data</li>
+            </ul>
+          </div>
+        </div>
+
+        {errorMessage && (
+          <div className="mb-4 flex items-start gap-2 px-3 py-2.5 bg-destructive/10 border border-destructive/20 rounded-xl">
+            <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-destructive">{errorMessage}</p>
+          </div>
+        )}
+
+        <div className="flex justify-end gap-3">
+          <Button variant="outline" onClick={onCancel} disabled={isLoading}
+            className="border-border text-foreground hover:bg-muted">
+            Cancel
+          </Button>
+          <Button variant="destructive" onClick={onConfirm} disabled={isLoading}
+            className="disabled:opacity-50">
+            {isLoading
+              ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Deleting…</>
+              : <><Trash2 className="w-3.5 h-3.5 mr-1.5" />Delete Project</>}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Dashboard Component ─────────────────────────────────────────────────
 
 type ProjectDashboardProps = {
@@ -362,7 +441,8 @@ type ProjectDashboardProps = {
 export function ProjectDashboard(_props: ProjectDashboardProps) {
   const navigate = useNavigate();
   const { projectId } = useParams<{ projectId: string }>();
-  const { getProjectById, archiveProject, restoreProject, updateProject } = useProjects();
+  const { getProjectById, archiveProject, restoreProject, updateProject, deleteProject, refreshProjects } = useProjects();
+  const { user } = useAuth();
 
   const project = getProjectById(projectId!);
 
@@ -390,8 +470,11 @@ export function ProjectDashboard(_props: ProjectDashboardProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showArchiveDialog, setShowArchiveDialog] = useState(false);
   const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isArchiving, setIsArchiving] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   if (!project) {
     return (
@@ -449,6 +532,40 @@ export function ProjectDashboard(_props: ProjectDashboardProps) {
     finally { setIsRestoring(false); }
   }, [project.id, restoreProject, updateProject]);
 
+  // Ownership check: show Delete by default to avoid layout shift (Edit/Archive
+  // render instantly from the cached project, but ownerId only arrives from the
+  // async detail API). Once the detail response resolves we hide the button for
+  // non-owners.  The API still enforces 403 as defense-in-depth.
+  const resolvedOwnerId = project.ownerId || dashData?.ownerId;
+  const isOwner = resolvedOwnerId ? !!(user?.id && user.id === resolvedOwnerId) : true;
+
+  const handleDelete = useCallback(async () => {
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteProject(project.id);
+      setShowDeleteDialog(false);
+      toast.success('Project deleted successfully.');
+      // Refresh the project list to ensure stale data is cleared
+      refreshProjects();
+      // Navigate away from the deleted project
+      navigate('/projects', { replace: true });
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 403) {
+        setDeleteError('You do not have permission to delete this project.');
+      } else if (status === 404) {
+        setDeleteError('Project not found. It may have already been deleted.');
+        // Refresh list to clear stale data
+        refreshProjects();
+      } else {
+        setDeleteError(getApiMessage(err) || 'Failed to delete project. Please try again.');
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [project.id, deleteProject, refreshProjects, navigate]);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto p-6 lg:p-8">
@@ -478,6 +595,12 @@ export function ProjectDashboard(_props: ProjectDashboardProps) {
                 <Button variant="outline" size="sm" onClick={() => setShowArchiveDialog(true)}
                   className="border-warning/40 text-warning hover:bg-warning hover:text-white hover:border-warning">
                   <Archive className="w-3.5 h-3.5 mr-1.5" />Archive Project
+                </Button>
+              )}
+              {isOwner && (
+                <Button variant="outline" size="sm" onClick={() => { setDeleteError(null); setShowDeleteDialog(true); }}
+                  className="border-destructive/40 text-destructive hover:bg-destructive hover:text-white hover:border-destructive">
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" />Delete Project
                 </Button>
               )}
               {isArchived && (
@@ -754,6 +877,15 @@ export function ProjectDashboard(_props: ProjectDashboardProps) {
       {showRestoreDialog && (
         <ConfirmDialog type="restore" projectName={projectName} isLoading={isRestoring}
           onConfirm={handleRestore} onCancel={() => setShowRestoreDialog(false)} />
+      )}
+      {showDeleteDialog && (
+        <DeleteProjectDialog
+          projectName={projectName}
+          isLoading={isDeleting}
+          errorMessage={deleteError}
+          onConfirm={handleDelete}
+          onCancel={() => { if (!isDeleting) setShowDeleteDialog(false); }}
+        />
       )}
     </div>
   );

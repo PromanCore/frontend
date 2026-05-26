@@ -84,6 +84,7 @@ function mapListItemToProject(item: any): Project {
     description: item.description || '',
     createdAt: item.createdAt || now,
     updatedAt: item.updatedAt || now,
+    ownerId: item.ownerId ?? undefined,
     // Backward-compat aliases
     name: projectName,
     type: projectType || '',
@@ -123,6 +124,7 @@ function mapDetailToProject(detail: any, existing?: Project): Project {
     expectedEndDate: p.expectedEndDate ?? base.expectedEndDate,
     createdAt: p.createdAt || base.createdAt,
     updatedAt: p.updatedAt || base.updatedAt,
+    ownerId: p.ownerId ?? base.ownerId,
     // Module statuses from API-13
     teamAnalysisStatus: (statuses.teamOptimization?.status as AnalysisStatus) || base.teamAnalysisStatus,
     riskAnalysisStatus: (statuses.riskAnalysis?.status as AnalysisStatus) || base.riskAnalysisStatus,
@@ -258,8 +260,9 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // ── Delete (local cache only — no dedicated delete endpoint in spec) ───────
+  // ── Delete (permanent — calls real API) ─────────────────────────────────────
   const deleteProject = useCallback(async (id: string): Promise<void> => {
+    await projectsApi.deleteProject(id);
     setProjects((prev) => prev.filter((p) => p.id !== id));
   }, []);
 
