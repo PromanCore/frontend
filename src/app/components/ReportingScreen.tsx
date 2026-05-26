@@ -666,54 +666,56 @@ export function ReportingScreen({ project, onUpdateProject, onBack, }: Reporting
               )}
             </div>
           ) : (
-            <>
-              {/* Table header */}
-              <div className="grid grid-cols-[1fr_160px_180px_180px] gap-4 px-5 py-3 border-b border-border bg-muted/30">
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Report Type</span>
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Member</span>
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Generated</span>
-                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
-              </div>
-
-              {/* Rows */}
-              {paginated.map((report) => (
-                <div key={report.reportId}
-                  className="grid grid-cols-[1fr_160px_180px_180px] gap-4 px-5 py-4 border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors items-center">
-                  {/* Type */}
-                  <div>
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border font-medium ${reportTypeBadgeCls(report.reportType)}`}>
-                      {reportTypeIcon(report.reportType)} {report.reportType}
-                    </span>
-                  </div>
-                  {/* Member */}
-                  <div className="text-sm text-muted-foreground truncate">
-                    {report.memberName || '—'}
-                  </div>
-                  {/* Date */}
-                  <div className="text-sm text-muted-foreground">{formatTs(report.generatedAt)}</div>
-                  {/* Actions */}
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleViewReport(report)}
-                      disabled={loadingReportId === report.reportId}
-                      className="h-7 px-2 border-border text-foreground hover:bg-muted text-xs">
-                      {loadingReportId === report.reportId
-                        ? <Loader2 className="w-3 h-3 animate-spin" />
-                        : <><Eye className="w-3 h-3 mr-1" />View</>}
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleExportFromList(report)}
-                      className="h-7 px-2 border-border text-foreground hover:bg-muted text-xs">
-                      <Download className="w-3 h-3 mr-1" />PDF
-                    </Button>
-                    {!isArchived && (
-                      <button onClick={() => setDeletingReport(report)}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
+            <div className="overflow-x-auto">
+              <div className="min-w-[800px]">
+                {/* Table header */}
+                <div className="grid grid-cols-[1fr_160px_180px_180px] gap-4 px-5 py-3 border-b border-border bg-muted/30">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Report Type</span>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Member</span>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Generated</span>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Actions</span>
                 </div>
-              ))}
-            </>
+
+                {/* Rows */}
+                {paginated.map((report) => (
+                  <div key={report.reportId}
+                    className="grid grid-cols-[1fr_160px_180px_180px] gap-4 px-5 py-4 border-b border-border/50 last:border-0 hover:bg-muted/20 transition-colors items-center">
+                    {/* Type */}
+                    <div>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border font-medium ${reportTypeBadgeCls(report.reportType)}`}>
+                        {reportTypeIcon(report.reportType)} {report.reportType}
+                      </span>
+                    </div>
+                    {/* Member */}
+                    <div className="text-sm text-muted-foreground truncate">
+                      {report.memberName || '—'}
+                    </div>
+                    {/* Date */}
+                    <div className="text-sm text-muted-foreground">{formatTs(report.generatedAt)}</div>
+                    {/* Actions */}
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant="outline" onClick={() => handleViewReport(report)}
+                        disabled={loadingReportId === report.reportId}
+                        className="h-7 px-2 border-border text-foreground hover:bg-muted text-xs">
+                        {loadingReportId === report.reportId
+                          ? <Loader2 className="w-3 h-3 animate-spin" />
+                          : <><Eye className="w-3 h-3 mr-1" />View</>}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleExportFromList(report)}
+                        className="h-7 px-2 border-border text-foreground hover:bg-muted text-xs">
+                        <Download className="w-3 h-3 mr-1" />PDF
+                      </Button>
+                      {!isArchived && (
+                        <button onClick={() => setDeletingReport(report)}
+                          className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 
